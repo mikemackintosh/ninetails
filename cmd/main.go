@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"ninetails/config"
+	"ninetails/version"
 	"os"
 	"sync"
 )
@@ -15,6 +16,7 @@ var (
 	/* */
 	flagWithFilename bool
 	flagWithLinenum  bool
+	flagVersion      bool
 
 	/* */
 	flagConfig string
@@ -23,12 +25,18 @@ var (
 func init() {
 	flag.BoolVar(&flagWithFilename, "H", false, "Display filename")
 	flag.BoolVar(&flagWithLinenum, "n", false, "Display linenum")
+	flag.BoolVar(&flagVersion, "v", false, "Display version")
 	flag.StringVar(&flagConfig, "c", ".ninetail.yml", "Configuration file")
 }
 
 func main() {
 	// Parse the config
 	flag.Parse()
+
+	if flagVersion {
+		fmt.Printf("%s - %s\n", version.Version, version.CommitHash)
+		os.Exit(0)
+	}
 
 	if err := config.Parse(flagConfig); err != nil {
 		log.Fatal(err)
