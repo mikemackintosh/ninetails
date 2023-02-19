@@ -77,11 +77,14 @@ func main() {
 	// Otherwise, look for files passed as arguments
 	var wg = &sync.WaitGroup{}
 	var args = flag.Args()
-	if len(args) > 0 {
-		for _, f := range args {
-			wg.Add(1)
-			go readFile(wg, f, messages)
-		}
+	if len(args) == 0 {
+		fmt.Printf("no files specified")
+		os.Exit(1)
+	}
+
+	for _, f := range args {
+		wg.Add(1)
+		go readFile(wg, f, messages)
 	}
 
 	wg.Wait()
