@@ -39,7 +39,7 @@ fi
 for os in ${OS[@]}; do 
     for arch in ${ARCH[@]}; do
         echo -e "\nBuilding for $os-$arch"
-        GOOS=$os GOARCH=$arch go build -ldflags="${LDFLAGS[*]}" -o release/bin/ninetails-$os-$arch cmd/main.go
+        GOOS=$os GOARCH=$arch go build -ldflags="-s -w ${LDFLAGS[*]}" -o release/bin/ninetails-$os-$arch cmd/main.go
         echo $(shasum -a 256 release/bin/ninetails-$os-$arch)
     done
 done
