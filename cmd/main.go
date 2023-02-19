@@ -5,17 +5,21 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"ninetails/config"
 	"ninetails/version"
 	"os"
+	"strings"
 	"sync"
+	"time"
 )
 
 var (
 	/* */
 	flagWithFilename bool
 	flagWithLinenum  bool
+	flagWithFollow   bool
 	flagVersion      bool
 
 	/* */
@@ -26,6 +30,7 @@ func init() {
 	flag.BoolVar(&flagWithFilename, "H", false, "Display filename")
 	flag.BoolVar(&flagWithLinenum, "n", false, "Display linenum")
 	flag.BoolVar(&flagVersion, "v", false, "Display version")
+	flag.BoolVar(&flagWithFollow, "F", false, "Follow changes in the file")
 	flag.StringVar(&flagConfig, "c", ".ninetail.yml", "Configuration file")
 }
 
@@ -33,11 +38,13 @@ func main() {
 	// Parse the config
 	flag.Parse()
 
+	// Show the version info only if it's requested
 	if flagVersion {
 		fmt.Printf("%s - %s\n", version.Version, version.CommitHash)
 		os.Exit(0)
 	}
 
+	// Parse he configuration
 	if err := config.Parse(flagConfig); err != nil {
 		log.Fatal(err)
 	}
@@ -45,9 +52,8 @@ func main() {
 	// make a channel
 	messages := make(chan string)
 
-	var wg = &sync.WaitGroup{}
-
-	go printChannelData(messages)
+	// Start the channel watcher
+	go watcher(messages)
 
 	// Check if the config was provided from stdin. To do so, we need
 	// to see if stdin was provided via a pipe, before we start blocking
@@ -57,6 +63,7 @@ func main() {
 		panic(err)
 	}
 
+	// If there is stdin, read it
 	if fi.Mode()&os.ModeNamedPipe != 0 {
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
@@ -66,6 +73,8 @@ func main() {
 		}
 	}
 
+	// Otherwise, look for files passed as arguments
+	var wg = &sync.WaitGroup{}
 	var args = flag.Args()
 	if len(args) > 0 {
 		for _, f := range args {
@@ -77,6 +86,7 @@ func main() {
 	wg.Wait()
 }
 
+// readFile
 func readFile(wg *sync.WaitGroup, f string, c chan string) {
 	defer wg.Done()
 
@@ -90,15 +100,27 @@ func readFile(wg *sync.WaitGroup, f string, c chan string) {
 	}
 	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
+	scanner := bufio.NewReader(file)
 	var i = 0
-	for scanner.Scan() {
-		line := scanner.Text()
+	for {
+		line, err := scanner.ReadString('\n')
+		line = strings.Replace(line, "\n", "", -1)
+		if err != nil {
+			if err == io.EOF {
+				if !flagWithFollow {
+					break
+				}
+				time.Sleep(time.Millisecond * 100)
+			} else {
+				fmt.Println(err)
+			}
+		}
 
-		var formattedLine = ""
-
+		var formattedLine = "%s"
+		// If the user requested to show the filename, prep the string
 		if flagWithFilename {
-			if flagWithLinenum {
+			// Only show line numbers when we are not following
+			if flagWithLinenum && !flagWithFollow {
 				i = i + 1
 				formattedLine = fmt.Sprintf("%s:%d | "+formattedLine, f, i)
 			} else {
@@ -106,15 +128,20 @@ func readFile(wg *sync.WaitGroup, f string, c chan string) {
 			}
 		}
 
-		c <- fmt.Sprintf(formattedLine+"%s", line)
-	}
+		// If we are following the file, strings reader will be empty
+		// skip it only if we are following, otherwise we want to print
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		if line == "" && flagWithFollow {
+			continue
+		}
+
+		c <- fmt.Sprintf(formattedLine, line)
 	}
 }
 
-func printChannelData(c chan string) {
+// watcher will watch the channel and call the formatter when
+// the data is received.
+func watcher(c chan string) {
 	for {
 		v, ok := <-c
 		if ok {
@@ -126,6 +153,7 @@ func printChannelData(c chan string) {
 	}
 }
 
+// formatLines will call the config replacer
 func formatLines(line string) {
 	if v, ok := config.Replace(line); ok {
 		fmt.Println(v)
