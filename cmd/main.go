@@ -7,12 +7,13 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"ninetails/config"
-	"ninetails/version"
 	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/mikemackintosh/ninetails/config"
+	"github.com/mikemackintosh/ninetails/version"
 )
 
 var (
