@@ -1,0 +1,2 @@
+build:
+	release/release.sh
