@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mikemackintosh/ninetails/config"
-	"github.com/mikemackintosh/ninetails/version"
+	"github.com/mikemackintosh/ninetails/internal/config"
+	"github.com/mikemackintosh/ninetails/internal/version"
 )
 
 var (
