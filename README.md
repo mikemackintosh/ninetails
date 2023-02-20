@@ -19,14 +19,22 @@ Colors can be customized, along with other escapes. These strings are auto-escap
 ```
 ---
 tails:
-  - search: "43:"
+
+  - search: '"level":"(.*?)","msg":"(.*?)"'
+    format: '"level":"\YELLOW$1\CLEAR","msg":"\BABYBLUE$2"'
+
+  - search: '"payload":(\[.*?\]),'
+    format: '"payload":\BABYBLUE$1\CLEAR,'
+
+  - search: '"error":"(.*?)"'
+    format: '"error":"\RED$1\CLEAR'
+    exit_on_match: true
+
+  - search: "INFO"
     color: PURPLE
 
-  - search: ":36"
+  - search: "DEBUG"
     color: ORANGE
-
-  - search: ":(08):(\\d+)"
-    format: :\YELLOW$1:\BLUE$2
 
 colors:
   PURPLE: "38;5;129m"
