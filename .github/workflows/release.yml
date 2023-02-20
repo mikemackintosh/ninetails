@@ -33,6 +33,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ./CHANGELOG.txt
+          token: ${{ secrets.RELEASE_TOKEN }}          
           files: |
             release/bin/ninetails-darwin-amd64
             release/bin/ninetails-darwin-arm64
