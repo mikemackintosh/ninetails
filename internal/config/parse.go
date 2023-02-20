@@ -34,12 +34,12 @@ func Parse(f string) error {
 
 	// Check if default colors need to be set
 	if len(config.Colors) == 0 {
-		Config.Colors = defaultColors
+		Config.Colors = DefaultColors
 		return nil
 	}
 
 	// write back the default colors, skipping duplicates
-	for color, code := range defaultColors {
+	for color, code := range DefaultColors {
 		if _, ok := config.Colors[color]; !ok {
 			config.Colors[color] = code
 		}

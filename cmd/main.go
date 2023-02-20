@@ -22,6 +22,7 @@ var (
 	flagWithLinenum  bool
 	flagWithFollow   bool
 	flagVersion      bool
+	flagDemo         bool
 
 	/* */
 	flagConfig string
@@ -31,6 +32,7 @@ func init() {
 	flag.BoolVar(&flagWithFilename, "H", false, "Display filename")
 	flag.BoolVar(&flagWithLinenum, "n", false, "Display linenum")
 	flag.BoolVar(&flagVersion, "v", false, "Display version")
+	flag.BoolVar(&flagDemo, "demo", false, "")
 	flag.BoolVar(&flagWithFollow, "F", false, "Follow changes in the file")
 	flag.StringVar(&flagConfig, "c", ".ninetails.yml", "Configuration file")
 }
@@ -38,6 +40,13 @@ func init() {
 func main() {
 	// Parse the config
 	flag.Parse()
+
+	if flagDemo {
+		for k, v := range config.DefaultColors {
+			fmt.Printf("\033[%s%s\033[0m\n", v, k)
+		}
+		os.Exit(0)
+	}
 
 	// Show the version info only if it's requested
 	if flagVersion {

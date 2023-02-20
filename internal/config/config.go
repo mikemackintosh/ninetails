@@ -1,7 +1,7 @@
 package config
 
 // Default Colors
-var defaultColors = map[string]string{
+var DefaultColors = map[string]string{
 	"PURPLE":    "38;5;129m",
 	"PINK":      "38;5;162m",
 	"RED":       "38;5;196m",
@@ -16,6 +16,7 @@ var defaultColors = map[string]string{
 	"LIGHTPINK": "38;5;212m",
 	"WHITE":     "38;5;7m",
 	"CLEAR":     "0m",
+	"RESET":     "0m",
 }
 
 // Config is an instance of a configuration.
