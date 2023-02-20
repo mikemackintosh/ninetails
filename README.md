@@ -7,7 +7,7 @@ The easiest approach is to use something like `wget`:
 
 ```
 NINETAILS=ninetails-$(uname -o |  awk '{print tolower($0)}')-$(uname -m)
-wget "https://github.com/mikemackintosh/ninetails/releases/download/v1.0.3/${NINETAILS}"
+wget "https://github.com/mikemackintosh/ninetails/releases/download/v1.0.4/${NINETAILS}"
 chmod +x $NINETAILS
 cp $NINETAILS ninetails
 ```
