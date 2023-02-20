@@ -29,6 +29,21 @@ func Parse(f string) error {
 		m.re = r
 	}
 
+	// Set the instance config
 	Config = &config
+
+	// Check if default colors need to be set
+	if len(config.Colors) == 0 {
+		Config.Colors = defaultColors
+		return nil
+	}
+
+	// write back the default colors, skipping duplicates
+	for color, code := range defaultColors {
+		if _, ok := config.Colors[color]; !ok {
+			config.Colors[color] = code
+		}
+	}
+
 	return nil
 }

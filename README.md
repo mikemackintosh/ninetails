@@ -39,18 +39,5 @@ tails:
     color: ORANGE
 
 colors:
-  PURPLE: "38;5;129m"
-  PINK: "38;5;162m"
-  RED: "38;5;196m"
-  ORANGE: "38;5;208m"
-  YELLOW: "38;5;184m"
-  GREEN: "38;5;154m"
-  BLUE: "38;5;32m"
-  GREY: "38;5;242m"
-  DARKGREY: "38;5;239m"
-  LIGHTGREY: "38;5;249m"
-  BABYBLUE: "38;5;123m"
-  LIGHTPINK: "38;5;212m"
-  WHITE: "38;5;7m"
-  CLEAR: "0m"
-  ```
+  CUSTOM_PURPLE: "38;5;128m"
+```

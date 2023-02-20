@@ -1,3 +1,7 @@
+v1.0.4
+- fixed stdin early exit in some scenarios
+- defaulted colors to not rely on config, per feedback
+
 v1.0.3
 - fixed Sprintf directrive for certain file types
 

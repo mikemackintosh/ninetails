@@ -59,6 +59,7 @@ func main() {
 	// Check if the config was provided from stdin. To do so, we need
 	// to see if stdin was provided via a pipe, before we start blocking
 	// on the scanner read loop.
+	var usingStdin bool
 	fi, err := os.Stdin.Stat()
 	if err != nil {
 		panic(err)
@@ -66,6 +67,7 @@ func main() {
 
 	// If there is stdin, read it
 	if fi.Mode()&os.ModeNamedPipe != 0 {
+		usingStdin = true
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
 			if len(scanner.Text()) > 0 {
@@ -77,7 +79,7 @@ func main() {
 	// Otherwise, look for files passed as arguments
 	var wg = &sync.WaitGroup{}
 	var args = flag.Args()
-	if len(args) == 0 {
+	if len(args) == 0 && !usingStdin {
 		fmt.Printf("no files specified")
 		os.Exit(1)
 	}
@@ -126,7 +128,7 @@ func readFile(wg *sync.WaitGroup, f string, c chan string) {
 			// Only show line numbers when we are not following
 			if flagWithLinenum && !flagWithFollow {
 				i = i + 1
-				formattedLine = fmt.Sprintf("%s:\033[38;5;232m%d\033[0m | ", f, i) + formattedLine
+				formattedLine = fmt.Sprintf("%s:%d | ", f, i) + formattedLine
 			} else {
 				formattedLine = fmt.Sprintf("%s | ", f) + formattedLine
 			}
