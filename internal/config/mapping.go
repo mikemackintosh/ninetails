@@ -6,14 +6,20 @@ import (
 	"strings"
 )
 
-// Mappings is a slice of Mapping pointers
+// Mappings is a slice of Mapping pointers.
 type Mappings []*Mapping
 
-// Mapping is a struct of match instructions
+// Mapping is a struct of match instructions.
+//   - Search is the string you want to match on
+//   - Color is the color to highlight the matching line
+//   - Format is the regex replacement format you want to output
+//   - ExitOnMatch determines if we should stop processing after
+//     the rule is matched
 type Mapping struct {
-	Search string  `yaml:"search"`
-	Color  *string `yaml:"color"`
-	Format *string `yaml:"format"`
+	Search      string  `yaml:"search"`
+	Color       *string `yaml:"color"`
+	Format      *string `yaml:"format"`
+	ExitOnMatch bool    `yaml:"exit_on_match"`
 
 	re *regexp.Regexp
 }

@@ -32,7 +32,7 @@ func init() {
 	flag.BoolVar(&flagWithLinenum, "n", false, "Display linenum")
 	flag.BoolVar(&flagVersion, "v", false, "Display version")
 	flag.BoolVar(&flagWithFollow, "F", false, "Follow changes in the file")
-	flag.StringVar(&flagConfig, "c", ".ninetail.yml", "Configuration file")
+	flag.StringVar(&flagConfig, "c", ".ninetails.yml", "Configuration file")
 }
 
 func main() {

@@ -1,45 +1,31 @@
 #!/bin/bash
 
-PACKAGE="github.com/mikemackintosh/ninetails/internal"
-
-# ARCHITECTURES SUPPORTED
-ARCH=(
-    amd64
-    arm64
-)
-
-# OPERATING SYSTEMS SUPPORT
-OS=(
-    linux
-    darwin
-    windows
-)
-
-git fetch --tags
-VERSION="$(git describe --tags --always --abbrev=0 --match='v[0-9]*.[0-9]*.[0-9]*' 2> /dev/null | sed 's/^.//')"
-COMMIT_HASH="$(git rev-parse --short HEAD)"
-BUILD_TIMESTAMP=$(date '+%Y-%m-%dT%H:%M:%S')
-
-# STEP 2: Build the ldflags
-
-LDFLAGS=(
-  "-X '${PACKAGE}/version.Version=${VERSION}'"
-  "-X '${PACKAGE}/version.CommitHash=${COMMIT_HASH}'"
-  "-X '${PACKAGE}/version.BuildTime=${BUILD_TIMESTAMP}'"
-)
-
-# STEP 3: Actual Go build process
-
-go build -ldflags="${LDFLAGS[*]}"
-
-if [[ ! -d release/bin ]]; then 
-    mkdir release/bin
+if [[ -z $NINETAILS_GITHUB_TOKEN ]]; then 
+    echo "Please set 'NINETAILS_GITHUB_TOKEN'"
+    exit 1
 fi
 
-for os in ${OS[@]}; do 
-    for arch in ${ARCH[@]}; do
-        echo -e "\nBuilding for $os-$arch"
-        GOOS=$os GOARCH=$arch go build -ldflags="-s -w ${LDFLAGS[*]}" -o release/bin/ninetails-$os-$arch cmd/main.go
-        echo $(shasum -a 256 release/bin/ninetails-$os-$arch)
-    done
-done
+# Load common vars
+source ./release/common.sh
+if [[ -z $VERSION || -z $COMMIT_HASH ]]; then
+    echo "VERSION or COMMIT_HASH unset. Exiting."
+    exit 1
+fi
+
+# Create next tag
+CREATE_TAG_OUTPUT=$(curl \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer ${NINETAILS_GITHUB_TOKEN}"\
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/${REPO}/git/tags \
+  -d '{"tag":"'$VERSION'","message":"'$VERSION'","object":"'$COMMIT_HASH'","type":"commit"}')
+echo $CREATE_TAG_OUTPUT
+
+exit 0
+# Build
+./release/build
+
+# Add binaries to next tag
+
+# Create release
