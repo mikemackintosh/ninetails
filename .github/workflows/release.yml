@@ -31,14 +31,7 @@ jobs:
       - name: Build
         run: make build
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+      - uses: ncipollo/release-action@v1
         with:
-          body_path: ./CHANGELOG.txt
-          token: ${{ secrets.RELEASE_TOKEN }}          
-          files: |
-            release/bin/ninetails-darwin-amd64
-            release/bin/ninetails-darwin-arm64
-            release/bin/ninetails-linux-amd64
-            release/bin/ninetails-linux-arm64
+          artifacts: "release/bin/ninetails-*"
+          bodyFile: "CHANGELOG.txt"
