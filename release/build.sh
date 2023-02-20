@@ -19,7 +19,7 @@ OS=(
 
 LDFLAGS=(
   "-X '${PACKAGE}/version.Version=${VERSION}'"
-  "-X '${PACKAGE}/version.CommitHash=${COMMIT_HASH}'"
+  "-X '${PACKAGE}/version.CommitHash=${SHORT_COMMIT_HASH}'"
   "-X '${PACKAGE}/version.BuildTime=${BUILD_TIMESTAMP}'"
 )
 
