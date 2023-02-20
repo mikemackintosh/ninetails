@@ -6,8 +6,10 @@ Ninetails is tail-like monitoring application written in Go. It's purpose is to 
 The easiest approach is to use something like `wget`: 
 
 ```
-curl -o ninetails "https://github.com/mikemackintosh/ninetails/releases/download/v1.0.2/ninetails-$(uname -o |  awk '{print tolower($0)}')-$(uname -m)"
-chmod +x ninetails
+NINETAILS=ninetails-$(uname -o |  awk '{print tolower($0)}')-$(uname -m)
+wget "https://github.com/mikemackintosh/ninetails/releases/download/v1.0.3/${NINETAILS}"
+chmod +x $NINETAILS
+cp $NINETAILS ninetails
 ```
 
 # Configuration
