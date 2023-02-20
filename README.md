@@ -41,3 +41,23 @@ tails:
 colors:
   CUSTOM_PURPLE: "38;5;128m"
 ```
+
+# Colors
+Available colors:
+```
+BABYBLUE
+BLUE
+CLEAR
+DARKGREY
+GREEN
+GREY
+LIGHTGREY
+LIGHTPINK
+ORANGE
+PINK
+PURPLE
+RED
+RESET
+WHITE
+YELLOW
+```
