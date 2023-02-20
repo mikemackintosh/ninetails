@@ -126,9 +126,9 @@ func readFile(wg *sync.WaitGroup, f string, c chan string) {
 			// Only show line numbers when we are not following
 			if flagWithLinenum && !flagWithFollow {
 				i = i + 1
-				formattedLine = fmt.Sprintf("%s:%d | "+formattedLine, f, i)
+				formattedLine = fmt.Sprintf("%s:\033[38;5;232m%d\033[0m | ", f, i) + formattedLine
 			} else {
-				formattedLine = fmt.Sprintf("%s | "+formattedLine, f)
+				formattedLine = fmt.Sprintf("%s | ", f) + formattedLine
 			}
 		}
 
