@@ -2,6 +2,10 @@
 
 Ninetails is tail-like monitoring application written in Go. It's purpose is to allow for easy identifcation of important fields, data or lines using Regex and a yaml configuration file.
 
+## Example
+<p align="center"><img src="https://github.com/mikemackintosh/ninetails/raw/main/.github/demo.png" width="600px" /></p>
+
+
 # Installation
 The easiest approach is to use something like `wget`: 
 
